@@ -92,7 +92,7 @@ sh /usr/local/src/jenkins/docker.sh
 ```
 container: jenkins-ci-base
 env:
-    - name: Jenkins
+    - NAME: Jenkins
 script:
     - echo "Hello ${NAME}"
 ```
