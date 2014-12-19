@@ -1,0 +1,16 @@
+---
+- hosts: all
+  sudo: yes
+  connection: ssh
+  vars:
+      jenkins_url: http://127.0.0.1:8080/
+      jenkins_cli: http://127.0.0.1:8080/jnlpJars/jenkins-cli.jar
+      jenkins_update_from: http://jenkins-plugin.aozora0000.biz/default.json
+      jenkins_server_name: _
+      jenkins_port: 80
+      wait_for_boot: 10
+  tasks:
+    - include: ./roles/common.yml
+    - include: ./roles/docker.yml
+    - include: ./roles/jenkins.yml
+    - include: ./roles/nginx.yml

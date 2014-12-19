@@ -1,0 +1,44 @@
+---
+- name: 時刻設定
+  command: ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+- name: fastestmirrorを日本優先に
+  ini_file: dest=/etc/yum/pluginconf.d/fastestmirror.conf section=main option={{item.option}} value={{item.value}}
+  with_items:
+      - { option: "include_only", value: ".jp" }
+      - { option: "verbose", value: 1 }
+
+- name: sshdサービス追加
+  service: name=sshd state=running enabled=yes
+
+- name: epelリポジトリ登録
+  yum:  name=http://ftp.jaist.ac.jp/pub/Linux/Fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
+- name: コモンパッケージインストール
+  yum:  name={{item}} state=latest
+  with_items:
+    - git
+    - htop
+    - which
+    - wget
+    - tar
+    - gcc
+    - openssl-devel
+    - libselinux-python
+    - python-setuptools
+
+- name: pipインストール
+  easy_install: name=pip
+
+- name: Bash用Yamlパーサーインストール
+  pip: name=shyaml
+
+- name: Python用Dockerライブラリインストール
+  pip: name=docker-py
+
+- name: IPTable停止
+  service: name=iptables state=stopped enabled=no
+
+- name: Apache停止
+  service: name=httpd state=stopped enabled=no
+  ignore_errors: true

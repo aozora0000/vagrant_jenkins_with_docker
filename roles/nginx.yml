@@ -1,0 +1,19 @@
+---
+- name: nginxレポジトリインストール
+  yum: name=http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+
+- name: Nginxインストール(最新版)
+  yum: name=nginx state=latest
+
+- name: Nginx初期設定ファイル削除
+  file: path=/etc/nginx/conf.d/{{item}} state=absent
+  with_items:
+      - default.conf
+      - example_ssl.conf
+  ignore_errors: true
+
+- name: Nginx設定ファイル設置
+  template: src=./files/nginx/jenkins.conf.j2 dest=/etc/nginx/conf.d/jenkins.conf
+
+- name: Nginxサービス起動追加
+  service: name=nginx state=running enabled=yes
