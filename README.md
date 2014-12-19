@@ -94,7 +94,7 @@ container: jenkins-ci-base
 env:
     - name: Jenkins
 script:
-    - echo "Hello Jenikins!"
+    - echo "Hello ${NAME}"
 ```
 
 #### container
