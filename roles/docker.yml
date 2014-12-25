@@ -9,13 +9,15 @@
   service: name=docker enabled=yes state=started
 
 - name: Dockerファイル設置
-  copy: src=./files/script/docker dest=/usr/local/src mode=0755
+  git: repo=https://github.com/aozora0000/jenkins-ci.git dest=/usr/local/src/docker
 
 - name: Docker再起動(DNS設定の読み込み)
   service: name=docker state=restarted
 
-- name: Dockerイメージのビルド
-  docker_image: path=/usr/local/src/docker/{{item}} name={{item}} state=build
+- name: jenkins-ciイメージのpull
+  command: docker pull aozora0000/{{item}}
   with_items:
       - jenkins-ci-base
       - jenkins-ci-php
+      - jenkins-ci-node
+      - jenkins-ci-perl

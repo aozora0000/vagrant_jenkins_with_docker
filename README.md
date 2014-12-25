@@ -46,28 +46,32 @@ Host github
 ## Jenkinsについて
 色々なJenkinsプラグインを導入しています。
 
-|       plugin名       |             役割              |
-|:-------------------:|:---------------------------:|
-|      ansicolor      |           ログの色付け            |
-|  categorized-view   |         リストビューグループ化         |
-|       ci-skip       |           ビルドスキップ           |
-|      cloverphp      |        PHP カバレッジ表示用         |
-|     credentials     |            認証設定             |
-|     disk-usage      |         ディスク使用量を計測          |
-|      envinject      |           環境変数の設定           |
-|    extra-columns    |          リストビュー拡張           |
-|         git         |           GITコマンド           |
-|     git-client      |            上に同じ             |
-|      gravatar       | ***simple-theme-plugin依存*** |
-|       jquery        | ***simple-theme-plugin依存*** |
-|       locale        |            言語変更用            |
-|     monitoring      |         Jenkinsの監視          |
-|  pegdown-formatter  |       MarkDownっぽくコメント       |
-|    sidebar-link     |           サイドバー拡張           |
-| simple-theme-plugin |           デザインを変更           |
-|     timestamper     |        コンソール出力に時間を表示        |
-|  idobata-notifier   |      IDOBATAにビルド結果を送信       |
-|       hipchat       |      HIPCHATにビルド結果を送信       |
+|        plugin名        |             役割              |
+|:---------------------:|:---------------------------:|
+|       ansicolor       |           ログの色付け            |
+|   categorized-view    |         リストビューグループ化         |
+| build-monitor-plugin  |      ダッシュボードでビルドの進捗確認       |
+|   buildtriggerbadge   |    サイドバーのビルド履歴でトリガーバッジ表示    |
+| build-pipeline-plugin |          ビルドパイプライン          |
+|        ci-skip        |           ビルドスキップ           |
+|       cloverphp       |        PHP カバレッジ表示用         |
+| configurationslicing  |           設定の共通化            |
+|      credentials      |            認証設定             |
+|      disk-usage       |         ディスク使用量を計測          |
+|       envinject       |           環境変数の設定           |
+|     extra-columns     |          リストビュー拡張           |
+|          git          |           GITコマンド           |
+|      git-client       |            上に同じ             |
+|       gravatar        | ***simple-theme-plugin依存*** |
+|        jquery         | ***simple-theme-plugin依存*** |
+|        locale         |            言語変更用            |
+|      monitoring       |         Jenkinsの監視          |
+|   pegdown-formatter   |       MarkDownっぽくコメント       |
+|     sidebar-link      |           サイドバー拡張           |
+|  simple-theme-plugin  |           デザインを変更           |
+|      timestamper      |        コンソール出力に時間を表示        |
+|   idobata-notifier    |      IDOBATAにビルド結果を送信       |
+|        hipchat        |      HIPCHATにビルド結果を送信       |
 
 ### オススメテーマ
 #### [Jenkins Atlassian Theme](https://github.com/djonsson/jenkins-atlassian-theme)
@@ -82,8 +86,7 @@ Host github
 - ビルド手順→シェルの実行に以下を追加
 
 ```
-sh /usr/local/src/jenkins/bootstrap.sh
-sh /usr/local/src/jenkins/docker.sh
+/usr/local/binjenkins-bootstrap
 ```
 
 ### 各パラメータについて
@@ -154,10 +157,10 @@ COMMIT_ID=$(git log -1 --format='%H')
 
 success html形式
 ```
-Project ${project} ${BRANCH} build <a href="$url">#${number} ${COMMIT_ID}</a>:<span class="label label-success">SUCCESS</span>
+Project ${project} build <a href="$url">#${number} </a>:<span class="label label-success">SUCCESS</span>
 ```
 
 failed html形式
 ```
-Project ${project} ${BRANCH} build <a href="$url">#${number} ${COMMIT_ID}</a>:<span class="label label-failure">FAILED</span>
+Project ${project} build <a href="$url">#${number} </a>:<span class="label label-important">FAILED</span>
 ```

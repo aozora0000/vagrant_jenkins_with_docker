@@ -11,6 +11,9 @@
 - name: Jenkinsユーザー用ssh設定ファイルコピー
   copy: src=./files/ssh/ssh_config dest=/var/lib/jenkins/.ssh/config owner=jenkins group=jenkins mode=0600
 
+- name: Jenkinsユーザー用sshフォルダ権限設定
+  command: chmod 777 /var/lib/jenkins/.ssh
+
 - name: Java-OpenJDKインストール
   yum: name=java-1.7.0-openjdk-devel state=latest
 
@@ -53,10 +56,15 @@
       - ansicolor
       - ant
       - antisamy-markup-formatter
+      - build-monitor-plugin
+      - buildtriggerbadge
+      - build-pipeline-plugin
       - categorized-view
       - ci-skip
       - cloverphp
       - credentials
+      - console-column-plugin
+      - configurationslicing
       - cvs
       - disk-usage
       - envinject
@@ -65,6 +73,8 @@
       - git
       - git-client
       - gravatar
+      - hipchat
+      - idobata-notifier
       - javadoc
       - jquery
       - junit
@@ -77,6 +87,7 @@
       - monitoring
       - pam-auth
       - pegdown-formatter
+      - progress-bar-column-plugin
       - ruby-runtime
       - scm-api
       - sidebar-link
@@ -86,13 +97,12 @@
       - subversion
       - timestamper
       - translation
+      - urltrigger
       - view-job-filters
       - windows-slaves
-      - idobata-notifier
-      - hipchat
 
 - name: jenkins-cli起動
   command: /usr/local/bin/jenkins safe-restart
 
 - name: Jenkinsジョブスクリプト設置
-  copy: src=./files/script/jenkins dest=/usr/local/src mode=0644
+  copy: src=./files/jenkins/jenkins-bootstrap.sh dest=/usr/local/bin/jenkins-bootstrap mode="a+x"
