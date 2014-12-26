@@ -40,7 +40,11 @@ Host github
     HostName github.com
     IdentityFile ~/.ssh/id_rsa
     User git
+```
 
+## パーサー・通知スクリプトのアップデート
+```
+curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash
 ```
 
 ## Jenkinsについて
@@ -109,6 +113,9 @@ notify:
       token: $HIPCHAT_TOKEN
       room_id: $HIPCHAT_ROOM_ID
       from: Jenkins
+    - service: irc
+      room_id: test
+      ikachan: $IKACHAN_HOST
 ```
 
 #### container
@@ -128,11 +135,11 @@ container: jenkins-ci-php:5.3.*
 ビルドに関連するパッケージ等のインストールを実行
 ```
 steps:
-    - name: composerインストール
-      code: composer install --no-interaction --no-dev --no-progress
-    - name: PHPUNIT起動
-      code: phpunit
-    - code: rm -rf vendor/
+- name: composerインストール
+code: composer install --no-interaction --no-dev --no-progress
+- name: PHPUNIT起動
+code: phpunit
+- code: rm -rf vendor/
 ```
 
 
@@ -140,18 +147,38 @@ steps:
 ビルド・テスト後に通知処理
 - ***hipchat***
 - ***idobata***
-
+- ***irc***(要ikachanサーバー)
 ```
 notify:
-    - service: idobata
-      token: $IDOBATA_TOKEN
-    - service: hipchat
-      token: $HIPCHAT_TOKEN
-      room_id: $HIPCHAT_ROOM_ID
-      from: Jenkins
+- service: idobata
+token: $IDOBATA_TOKEN
+- service: hipchat
+token: $HIPCHAT_TOKEN
+room_id: $HIPCHAT_ROOM_ID
+from: Jenkins
+- service: irc
+room_id: test (#は要りません)
+ikachan: $IKACHAN_HOST
 ```
 
-## パーサー・通知スクリプトのアップデート
-```
-curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash
-```
+#### notifyパラメータの内容
+##### idotaba
+| parameter |                 content                 |
+|:---------:|:---------------------------------------:|
+|   token   | https://idobata.io/hook/generic/[token] |
+
+##### hipchat
+| parameter |         content          |
+|:---------:|:------------------------:|
+|   token   | hipchatで設定したnotify用TOKEN |
+|  room_id  |     hipchatのroom_id      |
+|   from    |         通知ユーザー名          |
+Tokenは[こちら](https://www.hipchat.com/admin/api)から取得できます。(要ログイン)
+- Type : Notification
+- Label: 表示名
+
+##### irc
+| parameter |                 content                  |
+|:---------:|:----------------------------------------:|
+|  room_id  |                 IRCの部屋名                  |
+|  ikachan  | IkachanサーバーのURL(例:http://localhost:4649) |
