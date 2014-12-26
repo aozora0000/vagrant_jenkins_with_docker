@@ -148,6 +148,7 @@ code: phpunit
 - ***hipchat***
 - ***idobata***
 - ***irc***(要ikachanサーバー)
+
 ```
 notify:
 - service: idobata
