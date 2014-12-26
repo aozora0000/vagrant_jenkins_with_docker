@@ -26,6 +26,7 @@
     - openssl-devel
     - libselinux-python
     - python-setuptools
+    - php-cli
 
 - name: pipインストール
   easy_install: name=pip

@@ -73,8 +73,6 @@
       - git
       - git-client
       - gravatar
-      - hipchat
-      - idobata-notifier
       - javadoc
       - jquery
       - junit
@@ -104,5 +102,5 @@
 - name: jenkins-cli起動
   command: /usr/local/bin/jenkins safe-restart
 
-- name: Jenkinsジョブスクリプト設置
-  copy: src=./files/jenkins/jenkins-bootstrap.sh dest=/usr/local/bin/jenkins-bootstrap mode="a+x"
+- name: Jenkinsスクリプトインストール
+  shell: curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash

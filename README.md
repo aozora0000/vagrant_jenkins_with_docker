@@ -70,8 +70,6 @@ Host github
 |     sidebar-link      |           サイドバー拡張           |
 |  simple-theme-plugin  |           デザインを変更           |
 |      timestamper      |        コンソール出力に時間を表示        |
-|   idobata-notifier    |      IDOBATAにビルド結果を送信       |
-|        hipchat        |      HIPCHATにビルド結果を送信       |
 
 ### オススメテーマ
 #### [Jenkins Atlassian Theme](https://github.com/djonsson/jenkins-atlassian-theme)
@@ -85,82 +83,75 @@ Host github
 - リポジトリ内に***.jenkins.yml***を設置
 - ビルド手順→シェルの実行に以下を追加
 
+.jenkins.yml内では環境変数が使えます(textで登録)
+- Jenkinsのプロジェクト内環境変数
+- Jenkinsのグローバル環境変数
+
 ```
-/usr/local/binjenkins-bootstrap
+yaml-parser .jenkins.yml
+sh build.sh
 ```
 
 ### 各パラメータについて
 
 #### 例
 ```
-container: jenkins-ci-base
-env:
-    - NAME: Jenkins
-script:
-    - echo "Hello ${NAME}"
+container: aozora0000/jenkins-ci-php:latest
+steps:
+    - name: composerインストール
+      code: composer install --no-interaction --no-dev --no-progress
+    - name: PHPUNIT起動
+      code: phpunit
+notify:
+    - service: idobata
+      token: $IDOBATA_TOKEN
+    - service: hipchat
+      token: $HIPCHAT_TOKEN
+      room_id: $HIPCHAT_ROOM_ID
+      from: Jenkins
 ```
 
 #### container
 利用するdockerイメージ名を記入
 
-- ***jenkins-ci-base***
-- ***jenkins-ci-php***
-- ***jenkins-ci-ruby***
-- ***jenkins-ci-node***
+- ***aozora0000/jenkins-ci-base***
+- ***aozora0000/jenkins-ci-php***
+- ***aozora0000/jenkins-ci-ruby***
+- ***aozora0000/jenkins-ci-node***
 
 ```
-container: jenkins-ci-php
+container: jenkins-ci-php:latest
+container: jenkins-ci-php:5.3.*
 ```
 
-#### env (未テスト)
-環境変数を入力
-```
-env:
-    - test: 1
-    - test2: 2
-```
-#### install(未テスト)
+#### steps
 ビルドに関連するパッケージ等のインストールを実行
 ```
-install:
-    - pecl install APC
-    - rbenv global 1.9.3
+steps:
+    - name: composerインストール
+      code: composer install --no-interaction --no-dev --no-progress
+    - name: PHPUNIT起動
+      code: phpunit
+    - code: rm -rf vendor/
 ```
 
-#### before_script(未テスト)
-ビルド・テストスクリプトの実行前に実行
+
+#### notify
+ビルド・テスト後に通知処理
+- ***hipchat***
+- ***idobata***
+
 ```
-before_script:
-    - APP_ENV="development"
+notify:
+    - service: idobata
+      token: $IDOBATA_TOKEN
+    - service: hipchat
+      token: $HIPCHAT_TOKEN
+      room_id: $HIPCHAT_ROOM_ID
+      from: Jenkins
 ```
 
-#### script
-ビルド・テストスクリプト
+## パーサー・通知スクリプトのアップデート
 ```
-script:
-    - phpunit --testdox ./tests
-```
-
-#### after_script(未テスト)
-ビルド・テスト後の実行後に実行
-```
-script:
-    - cat ./log/build_log.txt
-```
-
-## Idobata利用時
-ビルド処理
-```
-BRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-COMMIT_ID=$(git log -1 --format='%H')
-```
-
-success html形式
-```
-Project ${project} build <a href="$url">#${number} </a>:<span class="label label-success">SUCCESS</span>
-```
-
-failed html形式
-```
-Project ${project} build <a href="$url">#${number} </a>:<span class="label label-important">FAILED</span>
+curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash
 ```
