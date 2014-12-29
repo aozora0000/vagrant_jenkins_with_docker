@@ -81,7 +81,7 @@ curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/upda
 - http://master.source.test.do/dist/theme.js
 
 ## .jenkins.ymlについて
-*** /usr/local/src/jenkins *** 内のスクリプトでパースしています。
+***/usr/local/src/jenkins*** 内のスクリプトでパースしています。
 
 .jenkins.ymlを利用する場合には
 - リポジトリ内に***.jenkins.yml***を設置
@@ -127,19 +127,19 @@ notify:
 - ***aozora0000/jenkins-ci-node***
 
 ```
-container: jenkins-ci-php:latest
-container: jenkins-ci-php:5.3.*
+container: aozora0000/jenkins-ci-php:latest
+container: aozora0000/jenkins-ci-php:5.3.*
 ```
 
 #### steps
 ビルドに関連するパッケージ等のインストールを実行
 ```
 steps:
-- name: composerインストール
-code: composer install --no-interaction --no-dev --no-progress
-- name: PHPUNIT起動
-code: phpunit
-- code: rm -rf vendor/
+    - name: composerインストール
+      code: composer install --no-interaction --no-dev --no-progress
+    - name: PHPUNIT起動
+      code: phpunit
+    - code: rm -rf vendor/
 ```
 
 
@@ -151,15 +151,15 @@ code: phpunit
 
 ```
 notify:
-- service: idobata
-token: $IDOBATA_TOKEN
-- service: hipchat
-token: $HIPCHAT_TOKEN
-room_id: $HIPCHAT_ROOM_ID
-from: Jenkins
-- service: irc
-room_id: test (#は要りません)
-ikachan: $IKACHAN_HOST
+    - service: idobata
+      token: $IDOBATA_TOKEN
+    - service: hipchat
+      token: $HIPCHAT_TOKEN
+      room_id: $HIPCHAT_ROOM_ID
+      from: Jenkins
+    - service: irc
+      room_id: test (#は要りません)
+      ikachan: $IKACHAN_HOST
 ```
 
 #### notifyパラメータの内容
