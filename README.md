@@ -44,7 +44,8 @@ Host github
 
 ## パーサー・通知スクリプトのアップデート
 ```
-curl -L https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash
+curl -L \
+https://raw.githubusercontent.com/aozora0000/jenkins_scripts/master/update.sh | bash
 ```
 
 ## Jenkinsについて
@@ -183,3 +184,23 @@ Tokenは[こちら](https://www.hipchat.com/admin/api)から取得できます�
 |:---------:|:----------------------------------------:|
 |  room_id  |                 IRCの部屋名                  |
 |  ikachan  | IkachanサーバーのURL(例:http://localhost:4649) |
+
+## 利用出来るDockerイメージについて
+workerグループとworkerユーザーを追加して下さい。(Jenkinsディレクトリとのボリューム共有の為)
+workspaceディレクトリを作成、権限を設定してください。
+### 仕様
+- workerグループ gid:45678
+- workerユーザー
+  - uid:45678
+  - home:/home/worker
+  - sudoer追加
+    ```
+    $ vi /etc/sudoers.d/worker
+    worker    ALL=(ALL)    NOPASSWD: ALL
+    ```
+- workspaceディレクトリ
+  - /home/worker/workspace (worker:worker 0777)
+- Dockerfile内
+  ```
+  CMD ["su", "-", "worker"]
+  ```
